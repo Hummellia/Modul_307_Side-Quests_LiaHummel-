@@ -1,15 +1,702 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lia Hummel</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Side Quest – Dein nächstes Abenteuer</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #f3f1e9;
+  color: #182d29;
+  font: 16px/1.5 system-ui, sans-serif;
+}
+
+main {
+  max-width: 1040px;
+  margin: auto;
+  padding: 45px 22px;
+}
+
+header { margin-bottom: 30px; }
+
+small, .eyebrow {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+h1 {
+  font-size: clamp(36px, 6vw, 64px);
+  line-height: 1.05;
+  margin: 12px 0;
+}
+
+h2 {
+  font-size: 22px;
+  margin-top: 0;
+}
+
+.intro {
+  max-width: 580px;
+  color: #52645d;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 24px;
+}
+
+.card {
+  background: white;
+  border: 1px solid #d9dfd5;
+  border-radius: 22px;
+  padding: 26px;
+  margin-bottom: 22px;
+}
+
+label, legend { font-weight: 650; }
+
+label {
+  display: block;
+  margin: 0 0 7px;
+}
+
+input, select {
+  font: inherit;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #acbab1;
+  border-radius: 10px;
+  background: white;
+  color: inherit;
+}
+
+input:focus,
+select:focus,
+button:focus-visible {
+  outline: 3px solid #b6d975;
+  outline-offset: 3px;
+}
+
+.field { margin-bottom: 21px; }
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 23px;
+}
+
+legend { margin-bottom: 10px; }
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.choice {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0f4eb;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 0;
+}
+
+.choice input {
+  width: auto;
+  accent-color: #28533d;
+}
+
+.map {
+  background: repeating-linear-gradient(
+    35deg,
+    #e9efdf 0 35px,
+    #dce7d4 35px 39px,
+    #e9efdf 39px 80px
+  );
+  padding: 25px;
+  border-radius: 14px;
+  margin-top: 10px;
+}
+
+.map select { box-shadow: 0 4px 20px #18382d15; }
+
+.hint {
+  font-size: 13px;
+  color: #607067;
+  margin: 7px 0;
+}
+
+button {
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  background: #234c39;
+  color: white;
+  border: 0;
+  border-radius: 12px;
+  padding: 14px 18px;
+  width: 100%;
+}
+
+button:hover { background: #31684d; }
+
+button:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.stats {
+  display: flex;
+  gap: 24px;
+  margin: 20px 0;
+}
+
+.stats strong {
+  display: block;
+  font-size: 30px;
+}
+
+.stats span {
+  font-size: 13px;
+  color: #607067;
+}
+
+.badge {
+  display: inline-block;
+  background: #e2efca;
+  padding: 5px 12px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+ol { padding-left: 23px; }
+
+li {
+  padding: 8px 0;
+  border-bottom: 1px solid #edf0e9;
+}
+
+li span { float: right; }
+
+.notice {
+  font-size: 13px;
+  color: #607067;
+}
+
+#result { scroll-margin-top: 24px; }
+#result h2 { margin-top: 14px; }
+
+[hidden] { display: none !important; }
+
+@media (max-width: 740px) {
+  .layout { grid-template-columns: 1fr; }
+  .row { grid-template-columns: 1fr; }
+  main { padding-top: 26px; }
+}
+</style>
 </head>
 <body>
-    <h1>Hallo Hallo Hallo</h1>
-    <p>das ist mein name Lia Lia Lia</p>
-    
-    <script src="script.js"></script>
+
+<main>
+  <header>
+    <div class="eyebrow">Mach mehr aus deiner Freizeit</div>
+    <h1>Kleine Quest.<br>Neue Geschichte.</h1>
+    <p class="intro">
+      Raus aus der Routine: Finde eine Aktivität, die zu deiner
+      Zeit, deinem Budget und deiner Stimmung passt.
+    </p>
+  </header>
+
+  <div class="layout">
+    <section>
+      <form id="questForm" class="card">
+        <h2>Dein Abenteuer beginnt hier</h2>
+
+        <div class="field">
+          <label for="nickname">Nickname</label>
+          <input
+            id="nickname"
+            maxlength="24"
+            required
+            placeholder="Wie sollen wir dich nennen?"
+            autocomplete="off"
+            pattern=".*\S.*"
+          >
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="time">Verfügbare Zeit</label>
+            <select id="time">
+              <option value="15">15 Minuten</option>
+              <option value="30" selected>30 Minuten</option>
+              <option value="60">1 Stunde</option>
+              <option value="120">2 Stunden</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="budget">Maximales Budget (CHF)</label>
+            <input
+              id="budget"
+              type="number"
+              min="0"
+              max="1000"
+              step="0.5"
+              value="0"
+              required
+            >
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="place">Wo möchtest du etwas erleben?</label>
+          <div class="map">
+            <select id="place">
+              <option value="home">🏠 Zu Hause</option>
+              <option value="park">🌳 Im Park / in der Natur</option>
+              <option value="city">🏙️ In der Stadt</option>
+            </select>
+          </div>
+          <p class="hint">
+            Wähle eine grobe Umgebung. Deine genaue Position
+            wird nicht abgefragt.
+          </p>
+        </div>
+
+        <div class="field">
+          <label for="type">Art der Aktivität</label>
+          <select id="type">
+            <option value="creative">Kreativ</option>
+            <option value="active">Aktiv</option>
+            <option value="social">Sozial</option>
+            <option value="relax">Entspannend</option>
+          </select>
+        </div>
+
+        <fieldset>
+          <legend>Dein Mut-Level</legend>
+          <div class="choices">
+            <label class="choice">
+              <input type="radio" name="courage" value="1" checked>
+              Leicht
+            </label>
+            <label class="choice">
+              <input type="radio" name="courage" value="2">
+              Mittel
+            </label>
+            <label class="choice">
+              <input type="radio" name="courage" value="3">
+              Schwer
+            </label>
+            <label class="choice">
+              <input type="radio" name="courage" value="4">
+              Sehr schwer
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Wer ist dabei?</legend>
+          <div class="choices">
+            <label class="choice">
+              <input type="radio" name="company" value="solo" checked>
+              Allein
+            </label>
+            <label class="choice">
+              <input type="radio" name="company" value="friends">
+              Mit Freunden
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="field" id="friendsField" hidden>
+          <label for="friends">Wie viele Freunde kommen mit?</label>
+          <input
+            id="friends"
+            type="number"
+            min="1"
+            max="30"
+            step="1"
+            value="1"
+          >
+        </div>
+
+        <div class="field">
+          <label for="mood">Worauf hast du gerade Lust?</label>
+          <select id="mood">
+            <option value="calm">Etwas Ruhiges</option>
+            <option value="curious" selected>
+              Etwas Neues entdecken
+            </option>
+            <option value="energy">Mich richtig motivieren</option>
+          </select>
+        </div>
+
+        <button type="submit">Meine Side Quest finden ↗</button>
+
+        <p class="notice">
+          Dein Fortschritt bleibt in diesem Browser gespeichert.
+          Es werden keine Daten an einen Server gesendet.
+        </p>
+      </form>
+
+      <section
+        class="card"
+        id="result"
+        hidden
+        aria-live="polite"
+        tabindex="-1"
+      ></section>
+    </section>
+
+    <aside>
+      <section class="card">
+        <small>Dein Fortschritt</small>
+        <h2 id="playerName">Bereit für deine erste Quest?</h2>
+        <div class="badge" id="rank">Entdecker · Stufe 1</div>
+
+        <div class="stats">
+          <div>
+            <strong id="xp">0</strong>
+            <span>Gesammelte XP</span>
+          </div>
+          <div>
+            <strong id="completed">0</strong>
+            <span>Quests geschafft</span>
+          </div>
+        </div>
+
+        <p id="nextLevel" class="hint"></p>
+      </section>
+
+      <section class="card">
+        <h2>Lokales Ranking</h2>
+        <p class="hint">
+          Vergleich der Nicknames auf diesem Gerät und in diesem
+          Browser. Für ein gemeinsames Online-Ranking wäre ein
+          Server nötig.
+        </p>
+        <ol id="ranking"></ol>
+      </section>
+
+      <p id="storageNotice" class="notice" role="status"></p>
+    </aside>
+  </div>
+</main>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+const key = "side-quests-v1";
+
+let profiles = {};
+let active = null;
+
+// Gespeicherte Profile laden.
+try {
+  const data = JSON.parse(localStorage.getItem(key) || "{}");
+
+  if (data && typeof data === "object" && !Array.isArray(data)) {
+    for (const [name, p] of Object.entries(data)) {
+      if (
+        p &&
+        Number.isSafeInteger(p.xp) &&
+        p.xp >= 0 &&
+        Number.isSafeInteger(p.completed) &&
+        p.completed >= 0
+      ) {
+        Object.defineProperty(profiles, name, {
+          value: p,
+          writable: true,
+          enumerable: true,
+          configurable: true
+        });
+      }
+    }
+  }
+} catch (e) {
+  $("storageNotice").textContent =
+    "Gespeicherte Daten sind nicht verfügbar. " +
+    "Du kannst trotzdem loslegen.";
+}
+
+function save() {
+  try {
+    localStorage.setItem(key, JSON.stringify(profiles));
+  } catch (e) {
+    $("storageNotice").textContent =
+      "Speichern ist nicht möglich. Dein Fortschritt bleibt " +
+      "nur bis zum Schliessen dieser Seite erhalten.";
+  }
+}
+
+function profile(name) {
+  if (!Object.hasOwn(profiles, name)) {
+    Object.defineProperty(profiles, name, {
+      value: { xp: 0, completed: 0 },
+      writable: true,
+      enumerable: true,
+      configurable: true
+    });
+  }
+
+  return profiles[name];
+}
+
+function render() {
+  const name = $("nickname").value.trim();
+
+  const p = Object.hasOwn(profiles, name)
+    ? profiles[name]
+    : { xp: 0, completed: 0 };
+
+  $("playerName").textContent =
+    name || "Bereit für deine erste Quest?";
+
+  $("xp").textContent = p.xp;
+  $("completed").textContent = p.completed;
+
+  const level = 1 + Math.floor(p.xp / 100);
+
+  const title = level < 3
+    ? "Entdecker"
+    : level < 6
+      ? "Abenteurer"
+      : "Quest-Legende";
+
+  $("rank").textContent = title + " · Stufe " + level;
+
+  $("nextLevel").textContent =
+    (100 - p.xp % 100) + " XP bis zur nächsten Stufe.";
+
+  $("ranking").replaceChildren();
+
+  const entries = Object.entries(profiles).sort(
+    (a, b) =>
+      b[1].xp - a[1].xp ||
+      b[1].completed - a[1].completed
+  );
+
+  for (const [nick, stats] of entries) {
+    const li = document.createElement("li");
+    const score = document.createElement("span");
+
+    li.textContent = nick + " ";
+    score.textContent = stats.xp + " XP";
+
+    li.append(score);
+    $("ranking").append(li);
+  }
+
+  if (!entries.length) {
+    const li = document.createElement("li");
+    li.textContent = "Die erste Quest wartet auf dich.";
+    $("ranking").append(li);
+  }
+}
+
+// Zusätzliche Eingabe nur bei Gruppen anzeigen.
+document.querySelectorAll('[name="company"]').forEach(radio => {
+  radio.addEventListener("change", () => {
+    const group =
+      document.querySelector('[name="company"]:checked').value ===
+      "friends";
+
+    $("friendsField").hidden = !group;
+    $("friends").required = group;
+    $("friends").disabled = !group;
+  });
+});
+
+$("friends").disabled = true;
+$("nickname").addEventListener("input", render);
+
+// Ideen nach Umgebung und Aktivitätsart.
+const ideas = {
+  home: {
+    creative: [
+      "Gestalte eine Postkarte aus Papier oder mit einem digitalen Werkzeug.",
+      "Erfinde eine kurze Geschichte über einen Gegenstand in deinem Zimmer."
+    ],
+    active: [
+      "Bewege dich zu deinen Lieblingssongs in deinem eigenen Tempo.",
+      "Erfinde eine kleine Tanzfolge mit drei Bewegungen."
+    ],
+    social: [
+      "Schreibe einer bekannten Person eine freundliche Nachricht.",
+      "Überlege dir drei neue Fragen und rufe jemanden an, der Zeit zum Reden hat."
+    ],
+    relax: [
+      "Mach eine Bildschirmpause und höre bewusst auf die Geräusche um dich herum.",
+      "Suche dir einen gemütlichen Platz und lies ein paar Seiten."
+    ]
+  },
+
+  park: {
+    creative: [
+      "Zeichne eine Pflanze oder eine Landschaft, die du vor Ort siehst.",
+      "Suche fünf verschiedene Farben in der Natur und halte sie als Skizze fest."
+    ],
+    active: [
+      "Erkunde einen gut zugänglichen Weg in deinem eigenen Tempo.",
+      "Mache einen Spaziergang und entdecke drei interessante Details."
+    ],
+    social: [
+      "Rufe eine bekannte Person an und erzähle von deiner Umgebung.",
+      "Sammle auf einem Spaziergang Ideen für einen gemeinsamen Ausflug."
+    ],
+    relax: [
+      "Setze dich auf eine Bank und beobachte die Umgebung bewusst.",
+      "Lausche den Geräuschen und finde fünf verschiedene Klangquellen."
+    ]
+  },
+
+  city: {
+    creative: [
+      "Skizziere ein interessantes Gebäude von einem öffentlichen Platz aus.",
+      "Erfinde eine kurze Geschichte zu einem Schaufenster."
+    ],
+    active: [
+      "Erkunde eine öffentliche Strasse, die du noch nicht gut kennst.",
+      "Mache einen Spaziergang und suche drei besondere Fassaden."
+    ],
+    social: [
+      "Schreibe einer bekannten Person und plane einen gemeinsamen Stadtspaziergang.",
+      "Teile einen schönen Ort mit einer bekannten Person und frage nach ihrem Lieblingsort."
+    ],
+    relax: [
+      "Suche einen ruhigen öffentlichen Sitzplatz und mache eine Bildschirmpause.",
+      "Beobachte an einem öffentlichen Platz die Farben und Formen der Gebäude."
+    ]
+  }
+};
+
+$("questForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  if (!$("questForm").reportValidity()) return;
+
+  const name = $("nickname").value.trim();
+  if (!name) return;
+
+  const time = Number($("time").value);
+
+  const level = Number(
+    document.querySelector('[name="courage"]:checked').value
+  );
+
+  const group =
+    document.querySelector('[name="company"]:checked').value ===
+    "friends";
+
+  const pool = ideas[$("place").value][$("type").value];
+  const idea = pool[Math.floor(Math.random() * pool.length)];
+
+  const xp = 10 + level * 10 + Math.floor(time / 15) * 5;
+
+  profile(name);
+  save();
+
+  active = { name, xp };
+
+  const result = $("result");
+  result.replaceChildren();
+
+  const tag = document.createElement("div");
+  tag.className = "badge";
+  tag.textContent = "Deine nächste Side Quest · " + xp + " XP";
+
+  const heading = document.createElement("h2");
+  heading.textContent = idea;
+
+  const detail = document.createElement("p");
+  detail.textContent =
+    "Plane " + time + " Minuten ein. Diese Quest ist kostenlos " +
+    "und passt damit zu deinem Budget von " +
+    Number($("budget").value) + " CHF.";
+
+  const challenge = document.createElement("p");
+
+  challenge.textContent = [
+    "Starte ohne Leistungsdruck und probiere es einfach aus.",
+    "Füge eine eigene kleine Idee hinzu.",
+    "Setze dir ein persönliches Ziel und beschreibe danach, was neu für dich war.",
+    "Entwickle eine eigene Variante und präsentiere dein Ergebnis einer vertrauten Person, wenn sie Zeit hat."
+  ][level - 1];
+
+  const company = document.createElement("p");
+
+  company.textContent = group
+    ? "Gemeinsam mit " + Number($("friends").value) +
+      " Freunden: Jede Person bringt eine Idee ein."
+    : "Diese Quest kannst du allein angehen.";
+
+  const mood = document.createElement("p");
+
+  mood.textContent = {
+    calm: "Lass dir Zeit und mache bei Bedarf eine Pause.",
+    curious: "Achte besonders auf ein Detail, das du bisher übersehen hast.",
+    energy: "Teile deine Zeit in drei kleine Etappen auf und starte mit der ersten."
+  }[$("mood").value];
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.textContent = "Quest abgeschlossen · +" + xp + " XP";
+
+  button.addEventListener("click", () => {
+    if (!active) return;
+
+    const p = profile(active.name);
+    p.xp += active.xp;
+    p.completed++;
+
+    const doneName = active.name;
+    active = null;
+
+    save();
+
+    button.disabled = true;
+    button.textContent =
+      "Geschafft! Die XP wurden " + doneName + " gutgeschrieben.";
+
+    render();
+  });
+
+  result.append(
+    tag,
+    heading,
+    detail,
+    challenge,
+    company,
+    mood,
+    button
+  );
+
+  result.hidden = false;
+  render();
+  result.focus();
+});
+
+render();
+</script>
 </body>
 </html>
